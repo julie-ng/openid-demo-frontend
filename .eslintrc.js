@@ -3,13 +3,38 @@ module.exports = {
   env: {
     node: true
   },
-  'extends': [
+  extends: [
     'plugin:vue/essential',
     '@vue/standard'
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-unused-vars': [
+      'error',
+      { args: 'none' }
+    ],
+    'object-curly-spacing': [
+      'error',
+      'always'
+    ],
+    semi: [
+      'error',
+      'never'
+    ],
+    'space-before-blocks': 'error',
+    'space-before-function-paren': 'error',
+    'spaced-comment': [
+      'error',
+      'always',
+      {
+        exceptions: [
+          '-',
+          '+'
+        ]
+      }
+    ],
+    strict: 'warn'
   },
   parserOptions: {
     parser: 'babel-eslint'
