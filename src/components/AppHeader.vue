@@ -9,16 +9,21 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/profile">Profile</a>
-            <!-- <router-link class="nav-link" to="/">Home</router-link> -->
-          </li>
-          <li class="nav-item pl-3">
-            <a class="nav-link btn btn-outline-light" role="button" href="/logout">Logout</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
-          </li>
+          <!-- Logged In -->
+          <template v-if="loggedIn">
+            <li class="nav-item">
+              <a class="nav-link" href="/profile">Profile</a>
+            </li>
+            <li class="nav-item pl-3">
+              <a class="nav-link btn btn-outline-light" role="button" href="/logout">Logout</a>
+            </li>
+          </template>
+          <!-- Logged Out -->
+          <template v-else>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/login">Login</router-link>
+            </li>
+          </template>
         </ul>
       </div>
     </div>
@@ -27,11 +32,15 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'AppHeader',
   props: {
     loggedIn: Boolean
-  }
+  },
+  computed: mapState([
+    'loggedIn'
+  ])
 }
 </script>
 
