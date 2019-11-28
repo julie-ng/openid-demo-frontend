@@ -52,12 +52,16 @@ stages:
       - script:  echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
         displayName: 'Set sha variable'
 
-      - download: current
-        artifact: dist
-        displayName: 'test download'
+      # - download: current
+      #   artifact: dist
+      #   displayName: 'test download'
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: dist
+          path: $(Build.SourcesDirectory)/dist
 
       - script: ls -a
-        displayName: list dist
+        displayName: ls workspace
 
       - script: echo $(sha)
         displayName: 'output commit sha carries over jobs?'
