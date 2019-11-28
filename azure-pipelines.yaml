@@ -52,11 +52,11 @@ stages:
       - script:  echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
         displayName: 'Set sha variable'
 
-      - download: current
+      - download: dist
         artifact: dist
         displayName: 'test download'
 
-      - script: ls -a dist/
+      - script: ls -a
         displayName: list dist
 
       - script: echo $(sha)
