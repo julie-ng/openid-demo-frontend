@@ -24,13 +24,15 @@ stages:
 
     - job: Linter
       steps:
-      - script: npm ci && npm run lint
+      - script: npm ci
+      - script: npm run lint
         displayName: Lint Code
 
     - job: UnitTests
       displayName: Unit Tests
       steps:
-      - script: npm ci && npm run test:unit
+      - script: npm ci
+      - script: npm run test:unit
         displayName: Unit Tests
 
 # ----------------------------
