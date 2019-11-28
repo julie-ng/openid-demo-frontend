@@ -49,8 +49,10 @@ stages:
       - script: echo '##vso[task.setvariable variable=commitSha]'$(git rev-parse --short HEAD)''
         displayName: 'Set commitSha variable'
 
-      - script: docker build --tag $(registryName):$(Build.BuildId)-${commitSha} .
-        displayName: 'Docker: Build and tag image'
+      - script: echo '$commmitSha'
+        displayName: 'test commit sha'
+      # - script: docker build --tag $(registryName):$(Build.BuildId)-${commitSha} .
+      #   displayName: 'Docker: Build and tag image'
 
       # - task: Docker@1
       #   displayName: 'Push an image'
