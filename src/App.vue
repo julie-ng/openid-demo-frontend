@@ -17,7 +17,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./scss/custom-bootstrap";
+@import "./assets/custom-bootstrap";
 :root {
   --blue: #0078d7;
   --green: #7FBA00;
