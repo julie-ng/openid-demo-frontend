@@ -3,8 +3,10 @@ trigger:
   - feat/*
   - fix/*
 
-pool:
-  vmImage: 'ubuntu-latest'
+# pool:
+#   vmImage: 'ubuntu-latest'
+
+name: $(SourceBranchName)_$(Rev:.r)
 
 variables:
   azureSubscriptionEndpoint: $(service-connection-name)
