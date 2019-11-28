@@ -42,15 +42,25 @@ stages:
   jobs:
     - job: Build
       displayName: Build and Push Image
+      variables:
+        - sha: ''
       steps:
       - script: npm ci && npm run build
         displayName: 'Build HTML/JS/CSS'
 
-      - script: echo '##vso[task.setvariable variable=commitSha]'$(git rev-parse --short HEAD)''
-        displayName: 'Set commitSha variable'
+      - script:  echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
+        # name: commitStep
+      # - script: echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
+      #   name: commitShaStep
+        displayName: 'Set sha variable'
 
-      - script: echo '$commmitSha'
-        displayName: 'test commit sha'
+        # - script: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $(configuration) value"
+        # name: setvarStep
+      # - script: echo $(commitShaStep.sha)
+      #   displayName: 'test commit sha'
+
+      - script: echo $(sha)
+        displayName: 'output commit sha'
       # - script: docker build --tag $(registryName):$(Build.BuildId)-${commitSha} .
       #   displayName: 'Docker: Build and tag image'
 
