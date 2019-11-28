@@ -10,31 +10,25 @@ variables:
   azureSubscriptionEndpoint: $(service-connection-name)
   azureContainerRegistry: $(container-registry-host)
   registryName: $(azureContainerRegistry)/$(Build.Repository.Name)
-  imageTag: $(registryName):$(Build.BuildId)-$(Build.SourceVersion)
+  # imageTag: $(registryName):$(Build.BuildId)-$(Build.SourceVersion)
 
 stages:
 - stage: Tests
-  displayName: 'Test (Node.js)'
+  displayName: 'Test'
   jobs:
     - job: Audit
-      # pool:
-      #   vmImage: 'ubuntu-latest'
       steps:
       - script: npm audit
         displayName: Audit Dependencies
         continueOnError: true
 
     - job: Linter
-      # pool:
-      #   vmImage: 'ubuntu-latest'
       steps:
       - script: npm ci && npm run lint
         displayName: Lint Code
 
     - job: UnitTests
       displayName: Unit Tests
-      # pool:
-      #   vmImage: 'ubuntu-latest'
       steps:
       - script: npm ci && npm run test:unit
         displayName: Unit Tests
@@ -44,16 +38,19 @@ stages:
 # ----------------------------
 
 - stage: BuildImage
-  displayName: 'Build (Docker)'
+  displayName: 'Build'
   jobs:
-    - job: build_and_push_image
+    - job: Build
       displayName: Build and Push Image
       steps:
       - script: npm ci && npm run build
-        displayName: 'Docker: Build and tag image'
+        displayName: 'Build HTML/JS/CSS'
 
-      # - script: docker build --tag $(imageTag) .
-      #   displayName: 'Docker: Build and tag image'
+      - script: echo '##vso[task.setvariable variable=commitSha]'$(git rev-parse --short HEAD)''
+        displayName: 'Set commitSha variable'
+
+      - script: docker build --tag $(registryName):$(Build.BuildId)-${commitSha} .
+        displayName: 'Docker: Build and tag image'
 
       # - task: Docker@1
       #   displayName: 'Push an image'
