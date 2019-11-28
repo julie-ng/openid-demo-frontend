@@ -16,7 +16,7 @@ stages:
 - stage: Tests
   displayName: 'Test'
   jobs:
-    - job: Dependencies Audit
+    - job: Audit
       steps:
       - script: npm audit
         displayName: npm audit
