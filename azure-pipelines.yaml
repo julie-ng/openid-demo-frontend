@@ -42,16 +42,12 @@ stages:
   jobs:
     - job: Build
       displayName: Build and Push Image
-      variables:
-        - sha: ''
       steps:
       - script: npm ci && npm run build
         displayName: 'Build HTML/JS/CSS'
 
       - script:  echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
         # name: commitStep
-      # - script: echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
-      #   name: commitShaStep
         displayName: 'Set sha variable'
 
         # - script: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $(configuration) value"
