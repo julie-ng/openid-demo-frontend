@@ -16,24 +16,28 @@ stages:
 - stage: Tests
   displayName: 'Test'
   jobs:
-    - job: Audit
+    - job: Dependencies Audit
       steps:
       - script: npm audit
-        displayName: Audit Dependencies
+        displayName: npm audit
         continueOnError: true
 
-    - job: Linter
+    - job: npm
       steps:
       - script: npm ci
+        displayName: npm install
+
       - script: npm run lint
         displayName: Lint Code
 
-    - job: UnitTests
-      displayName: Unit Tests
-      steps:
-      - script: npm ci
       - script: npm run test:unit
         displayName: Unit Tests
+
+      - script: npm run build
+        displayName: Build Assets
+
+      - publish: $(System.DefaultWorkingDirectory)/dist
+        artifact: dist
 
 # ----------------------------
 # Docker Image: Build and Push
@@ -42,24 +46,23 @@ stages:
 - stage: BuildImage
   displayName: 'Build'
   jobs:
-    - job: Build
+    - job: BuildStatic
       displayName: Build and Push Image
       steps:
-      - script: npm ci && npm run build
-        displayName: 'Build HTML/JS/CSS'
-
       - script:  echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
-        # name: commitStep
         displayName: 'Set sha variable'
 
-        # - script: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $(configuration) value"
-        # name: setvarStep
-      # - script: echo $(commitShaStep.sha)
-      #   displayName: 'test commit sha'
+      - download: current
+        artifact: dist
+        displayName: 'test download'
+
+      - script: ls -a dist/
+        displayName: list dist
 
       - script: echo $(sha)
-        displayName: 'output commit sha'
-      # - script: docker build --tag $(registryName):$(Build.BuildId)-${commitSha} .
+        displayName: 'output commit sha carries over jobs?'
+
+      # - script: docker build --tag $(registryName):$(Build.BuildId)-${sha} .
       #   displayName: 'Docker: Build and tag image'
 
       # - task: Docker@1
