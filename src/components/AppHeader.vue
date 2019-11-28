@@ -15,7 +15,7 @@
               <a class="nav-link" href="/profile">Profile</a>
             </li>
             <li class="nav-item pl-3">
-              <a class="nav-link btn btn-outline-light" role="button" href="/logout">Logout</a>
+              <a class="nav-link btn btn-outline-light" role="button" href="/api/logout">Logout</a>
             </li>
           </template>
           <!-- Logged Out -->
@@ -47,6 +47,7 @@ export default {
 <style scoped lang="scss">
 .navbar {
   padding: 1em 0;
+  margin-bottom: 2em;
 }
 
 .navbar-brand {
