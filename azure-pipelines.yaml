@@ -5,11 +5,20 @@ trigger:
 
 name: $(BuildID)
 
+# variables:
+#   azureSubscriptionEndpoint: $(service-connection-name)
+#   azureContainerRegistry: $(container-registry-host)
+#   registryName: $(azureContainerRegistry)/$(Build.Repository.Name)
+#   # imageTag: $(registryName):$(Build.BuildId)-$(Build.SourceVersion)
+
 variables:
-  azureSubscriptionEndpoint: $(service-connection-name)
-  azureContainerRegistry: $(container-registry-host)
-  registryName: $(azureContainerRegistry)/$(Build.Repository.Name)
-  # imageTag: $(registryName):$(Build.BuildId)-$(Build.SourceVersion)
+  - group: azure-demos-config
+  - name: repository
+    value: $(registry-host)/$(registry-namespace)
+  - name: image-tag
+    value: $(repository):$(Build.BuildId)
+
+  #
 
 stages:
 - stage: Tests
@@ -61,16 +70,13 @@ stages:
           artifact: dist
           path: $(Build.SourcesDirectory)/dist
 
-      # - script: echo $(sha)
-      #   displayName: 'output commit sha carries over jobs?'
+      - script: docker build --tag $(image-tag)-$(sha) .
+        displayName: 'Docker: Build and tag image'
 
-      # - script: docker build --tag $(registryName):$(Build.BuildId)-${sha} .
-      #   displayName: 'Docker: Build and tag image'
-
-      # - task: Docker@1
-      #   displayName: 'Push an image'
-      #   inputs:
-      #     azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-      #     azureContainerRegistry: $(azureContainerRegistry)
-      #     imageName: $(imageTag)
-      #     command: push
+      - task: Docker@1
+        displayName: 'Push an image'
+        inputs:
+          azureSubscriptionEndpoint: $(service-connection-name)
+          azureContainerRegistry: $(registry-host)
+          imageName: $(image-tag)-$(sha)
+          command: push
