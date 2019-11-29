@@ -1,0 +1,76 @@
+trigger:
+  - master
+  - feat/*
+  - fix/*
+
+name: $(BuildID)
+
+variables:
+  azureSubscriptionEndpoint: $(service-connection-name)
+  azureContainerRegistry: $(container-registry-host)
+  registryName: $(azureContainerRegistry)/$(Build.Repository.Name)
+  # imageTag: $(registryName):$(Build.BuildId)-$(Build.SourceVersion)
+
+stages:
+- stage: Tests
+  displayName: 'Test'
+  jobs:
+    - job: Audit
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+      - script: npm audit
+        displayName: npm audit
+        continueOnError: true
+
+    - job: npmTasks
+      displayName: npm tasks
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+      - script: npm ci
+        displayName: npm install
+
+      - script: npm run lint
+        displayName: Lint Code
+
+      - script: npm run test:unit
+        displayName: Unit Tests
+
+      - script: npm run build
+        displayName: Build Assets
+
+      - publish: $(System.DefaultWorkingDirectory)/dist
+        artifact: dist
+
+# ----------------------------
+# Docker Image: Build and Push
+# ----------------------------
+
+- stage: BuildImage
+  displayName: 'Build'
+  jobs:
+    - job: BuildStatic
+      displayName: Build and Push Image
+      steps:
+      - script:  echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
+        displayName: 'Set sha variable'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: dist
+          path: $(Build.SourcesDirectory)/dist
+
+      # - script: echo $(sha)
+      #   displayName: 'output commit sha carries over jobs?'
+
+      # - script: docker build --tag $(registryName):$(Build.BuildId)-${sha} .
+      #   displayName: 'Docker: Build and tag image'
+
+      # - task: Docker@1
+      #   displayName: 'Push an image'
+      #   inputs:
+      #     azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+      #     azureContainerRegistry: $(azureContainerRegistry)
+      #     imageName: $(imageTag)
+      #     command: push
