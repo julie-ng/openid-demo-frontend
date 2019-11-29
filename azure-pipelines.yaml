@@ -3,10 +3,7 @@ trigger:
   - feat/*
   - fix/*
 
-# pool:
-#   vmImage: 'ubuntu-latest'
-
-name: $(SourceBranchName)_$(Rev:.r)
+name: $(BuildID)
 
 variables:
   azureSubscriptionEndpoint: $(service-connection-name)
@@ -19,12 +16,17 @@ stages:
   displayName: 'Test'
   jobs:
     - job: Audit
+      pool:
+        vmImage: 'ubuntu-latest'
       steps:
       - script: npm audit
         displayName: npm audit
         continueOnError: true
 
-    - job: npm
+    - job: npmTasks
+      displayName: npm tasks
+      pool:
+        vmImage: 'ubuntu-latest'
       steps:
       - script: npm ci
         displayName: npm install
@@ -54,16 +56,10 @@ stages:
       - script:  echo '##vso[task.setvariable variable=sha]'$(git rev-parse --short HEAD)''
         displayName: 'Set sha variable'
 
-      # - download: current
-      #   artifact: dist
-      #   displayName: 'test download'
       - task: DownloadPipelineArtifact@2
         inputs:
           artifact: dist
           path: $(Build.SourcesDirectory)/dist
-
-      - script: ls -a
-        displayName: ls workspace
 
       - script: echo $(sha)
         displayName: 'output commit sha carries over jobs?'
