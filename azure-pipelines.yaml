@@ -14,7 +14,7 @@ name: $(BuildID)
 variables:
   - group: azure-demos-config
   - name: repository
-    value: $(registry-host)/$(registry-namespace)
+    value: $(registry-host)/oidc-demo-frontend
   - name: image-tag
     value: $(repository):$(Build.BuildId)
 
