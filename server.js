@@ -27,12 +27,6 @@ fastify.register(proxy, {
       } else {
         reply.send(res)
       }
-      // fastify.log.warn('/Api Code? ', res.statusCode)
-      // console.log(res.rawHeaders)
-      // (res.statusCode < 400)
-      // 	? reply.send(res)
-      // 	: reply.send(fastify.httpErrors.badGateway())
-      // reply.send(res)
     }
   }
 })
