@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "fastify": "^2.10.0",
-    "fastify-http-proxy": "^2.3.0",
+    "fastify-http-proxy": "^4.3.1",
     "fastify-sensible": "^2.1.1",
     "fastify-static": "^2.5.1"
   },
